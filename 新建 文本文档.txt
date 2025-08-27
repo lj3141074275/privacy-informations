@@ -1,0 +1,48 @@
+# 下载仓库配置文件
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
+sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
+
+# 下载并安装 CUDA 12.1 本地仓库
+wget https://developer.download.nvidia.com/compute/cuda/12.1.0/local_installers/cuda-repo-ubuntu2204-12-1-local_12.1.0-530.30.02-1_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu2204-12-1-local_12.1.0-530.30.02-1_amd64.deb
+
+# 导入仓库密钥
+sudo cp /var/cuda-repo-ubuntu2204-12-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
+
+
+
+sudo apt update
+sudo apt install -y cuda-12-1  # 包含编译器、运行时等核心组件
+
+
+
+echo 'export PATH=/usr/local/cuda-12.1/bin:$PATH' >> ~/.bashrc
+echo 'export LD_LIBRARY_PATH=/usr/local/cuda-12.1/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
+source ~/.bashrc  # 立即生效
+
+
+
+# 解压下载的文件（文件名以实际为准）
+tar -xzvf cudnn-linux-x86_64-8.9.7.29_cuda12-archive.tar.xz
+
+# 复制文件到 CUDA 目录
+sudo cp cudnn-linux-x86_64-8.9.7.29_cuda12-archive/include/cudnn*.h /usr/local/cuda-12.1/include/
+sudo cp cudnn-linux-x86_64-8.9.7.29_cuda12-archive/lib/libcudnn* /usr/local/cuda-12.1/lib64/
+
+# 设置权限
+sudo chmod a+r /usr/local/cuda-12.1/include/cudnn*.h /usr/local/cuda-12.1/lib64/libcudnn*
+
+# 解压文件
+tar -xzvf TensorRT-9.2.0.5.Ubuntu-22.04.x86_64-gnu.cuda-12.1.tar.gz
+cd TensorRT-9.2.0.5
+
+# 复制库文件到系统目录
+sudo cp -r lib/* /usr/lib/x86_64-linux-gnu/
+sudo cp -r include/* /usr/include/
+sudo ldconfig  # 更新系统库缓存
+
+# 进入 TensorRT 的 Python 目录
+cd python
+
+# 安装对应 Python 3.10 的 wheel 包
+pip3.10 install tensorrt-9.2.0.5-cp310-none-linux_x86_64.whl
