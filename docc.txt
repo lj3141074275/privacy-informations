@@ -1,0 +1,33 @@
+# 更新系统包
+sudo apt update && sudo apt upgrade -y
+
+# 安装 Docker 依赖
+sudo apt install -y ca-certificates curl gnupg lsb-release
+
+# 添加 Docker 官方 GPG 密钥
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+# 添加 Docker 软件源
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# 安装 Docker 引擎
+sudo apt update && sudo apt install -y docker-ce docker-ce-cli containerd.io
+
+# 启动 Docker 服务并设置开机自启
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# （可选）将当前用户加入 docker 组，避免每次使用 sudo
+sudo usermod -aG docker $USER
+
+
+docker pull python:3.10-12.1-trt9.2-devel-ubuntu22.04
+
+docker images | grep python:3.10-12.1-trt9.2-devel-ubuntu22.04
+
+# 启动交互式容器（进入命令行界面）
+docker run -it --rm python:3.10-12.1-trt9.2-devel-ubuntu22.04 /bin/bash
+
+docker run -it --rm --gpus all python:3.10-12.1-trt9.2-devel-ubuntu22.04 /bin/bash
+
+
